@@ -1,0 +1,23 @@
+# 配置一个代理, 作为负载均衡器
+# 为入口暴露80端口
+# 配置应用于istio入口网关代理
+# hosts字段作为一个过滤器, 只有以dev.example.com和test.example.com为目的地的流量会被允许通过
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: my-gateway # Gateway的名称
+  namespace: default # Gateway的命名空间
+spec:
+  selector:
+    istio: ingressgateway # 使用填写的标签键值对匹配配置下发的边缘代理网关实例
+  servers:
+    - port:
+        number: 80 # 端口
+        name: http # 端口名称
+        protocol: HTTP # 通信协议
+      hosts: # 域名, 支持通配符 *
+        - dev.example.com
+        - test.example.com
+
+# 为了控制和转发流量到集群内运行的实际 Kubernetes 服务，
+# 我们必须用特定的主机名（例如 `dev.example.com` 和 `test.example.com`）配置一个VirtualService，然后将网关连接到它。
