@@ -1,0 +1,21 @@
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: customers-deny
+  namespace: default
+spec:
+  selector: # 定义了哪些工作负载将会执行该策略
+    matchLabels:
+      app: customers
+      version: v2
+  action: DENY
+  rules:
+    - from: # 定义了谁可以采取这些行动
+        - source:
+            notNamespaces: ["default"]
+    - to: # 定义了策略所允许的行动
+        - operation:
+            methods: ["GET"]
+    - when: # 定义了每个请求必须具备的属性, 以便被策略所允许
+        - key: request.headers [User-Agent]
+          values: ["Mozilla/*"]

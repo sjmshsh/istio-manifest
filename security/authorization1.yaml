@@ -1,0 +1,19 @@
+# 选择要应用该策略的工作负载
+# 要采取的行动（拒绝，允许或者审计）
+# 采取该行动的规则
+
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: customers-deny
+  namespace: default
+spec:
+  selector: # selector和matchLabels我们选择了策略所适用的工作负载
+    matchLabels:
+      app: customers
+      version: v2
+  action: DENY # 要采取的行动被设置为DENY
+  rules: # 最后在rules字段中定义所有的规则
+    - from:
+        - source:
+            notNamespaces: ["default"] # 含义是: 当请求来自于default命名空间之外时, 拒绝对customers v2工作负载的请求
