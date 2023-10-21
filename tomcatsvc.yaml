@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: tomcat
+  name: tomcat
+  namespace: microservice
+spec:
+  ports:
+    - port: 80
+      name: tcp
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: tomcat
+status:
+  loadBalancer: {}
